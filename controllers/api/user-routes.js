@@ -5,6 +5,16 @@ const { User, Post, Comment } = require("../../models");
 router.get("/", async (req, res) => {
   const dbUsersData = await User.findAll({
     attributes: { exclude: ["password"] },
+    include: [
+      {
+        model: Post,
+        attributes: ["id", "title", "created_at", "updated_at"],
+      },
+      {
+        model: Comment,
+        attributes: ["id", "comment", "created_at", "updated_at"],
+      },
+    ],
     
   });
   const users = dbUsersData.map((user) => user.get({ plain: true }));
@@ -17,6 +27,20 @@ router.get("/:id", async (req, res) => {
     const dbUserData = await User.findOne({
       where: { id: req.params.id },
       attributes: { exclude: ["password"] },
+      include: [
+        {
+          model: Post,
+          attributes: ["id", "title", "content", "created_at"],
+        },
+        {
+          model: Comment,
+          attributes: ["id", "comment", "created_at"],
+          include: {
+            model: Post,
+            attributes: ["title"],
+          },
+        },
+      ],
     });
 
     const user = dbUserData.get({ plain: true });
