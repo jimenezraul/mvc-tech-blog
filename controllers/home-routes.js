@@ -24,13 +24,23 @@ router.get("/", async (req, res) => {
         });
         const posts = dbPostsData.map((post) => post.get({ plain: true }));
         res.render('homepage', {
-            posts
+            posts,
+            loggedIn: req.session.loggedIn
         });
     }
     catch(err) {
         console.log(err);
         res.sendStatus(500);
     }
+});
+
+// login
+router.get("/login", (req, res) => {
+    console.log(req.session);
+    if (req.session.loggedIn) {
+        res.redirect("/");
+    }
+    res.render("login");
 });
 
 module.exports = router;

@@ -68,19 +68,31 @@ router.post("/", async (req, res) => {
 
 // Login a user
 router.post("/login", async (req, res) => {
+  console.log(req.body);
   try {
     const user = await User.findOne({
       where: {
-        username: req.body.username,
-        password: req.body.password,
+        email: req.body.email,
       },
     });
-
+    
     if (user) {
-      res.json(user);
-    } else {
-      res.status(401).json({ message: "Invalid credentials" });
+      const validPassword = await user.validatePassword(req.body.password);
+      if (!validPassword) {
+        res.status(400).json({ message: "Incorrect password!" });
+        return;
+      }
+
+      req.session.save(() => {
+        // declare session variables
+        req.session.user_id = user.id;
+        req.session.username = user.username;
+        req.session.loggedIn = true;
+  
+        res.json({ user: user, message: "You are now logged in!" });
+      });
     }
+
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
