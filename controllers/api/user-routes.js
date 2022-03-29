@@ -15,7 +15,6 @@ router.get("/", async (req, res) => {
         attributes: ["id", "comment", "created_at", "updated_at"],
       },
     ],
-    
   });
   const users = dbUsersData.map((user) => user.get({ plain: true }));
   res.json(users);
@@ -59,7 +58,14 @@ router.post("/", async (req, res) => {
       email: req.body.email,
       password: req.body.password,
     });
-    res.json(newUser);
+
+    req.session.save(() => {
+      req.session.user_id = newUser.id;
+      req.session.username = newUser.username;
+      req.session.loggedIn = true;
+
+      res.json(newUser);
+    });
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
@@ -68,14 +74,13 @@ router.post("/", async (req, res) => {
 
 // Login a user
 router.post("/login", async (req, res) => {
-  console.log(req.body);
   try {
     const user = await User.findOne({
       where: {
         email: req.body.email,
       },
     });
-    
+
     if (user) {
       const validPassword = await user.validatePassword(req.body.password);
       if (!validPassword) {
@@ -88,11 +93,10 @@ router.post("/login", async (req, res) => {
         req.session.user_id = user.id;
         req.session.username = user.username;
         req.session.loggedIn = true;
-  
+
         res.json({ user: user, message: "You are now logged in!" });
       });
     }
-
   } catch (err) {
     console.log(err);
     res.status(500).json(err);

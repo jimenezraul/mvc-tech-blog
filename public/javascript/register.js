@@ -20,5 +20,9 @@ async function registerHandlerForm(event) {
     } else {
       alert(response.statusText);
     }
+  }else{
+    alert("Please fill out all fields");
   }
 }
+
+document.querySelector(".register-form").addEventListener("submit", registerHandlerForm);

@@ -1,4 +1,6 @@
 const { Post, User, Comment } = require("../models");
+const Url = require("url");
+const { render } = require("express/lib/response");
 
 const router = require("express").Router();
 
@@ -23,9 +25,12 @@ router.get("/", async (req, res) => {
             ],
         });
         const posts = dbPostsData.map((post) => post.get({ plain: true }));
+        const q = Url.parse(req._parsedOriginalUrl, true);
         res.render('homepage', {
             posts,
-            loggedIn: req.session.loggedIn
+            loggedIn: req.session.loggedIn,
+            active_home: q.path === "/",
+            home: true,
         });
     }
     catch(err) {
@@ -38,7 +43,7 @@ router.get("/", async (req, res) => {
 router.get("/login", (req, res) => {
     console.log(req.session);
     if (req.session.loggedIn) {
-        res.redirect("/");
+        res.redirect("/dashboard");
     }
     res.render("login");
 });
@@ -50,5 +55,50 @@ router.get("/register", (req, res) => {
     }
     res.render("register");
 });
+
+// Post by id
+router.get("/post/:id/comments", async (req, res) => {
+    try {
+        const dbPostData = await Post.findOne({
+            where: { id: req.params.id },
+            attributes: [
+                "id",
+                "title",
+                "content",
+                "created_at",
+                "updated_at",
+            ],
+            include: [
+                {
+                    model: User,
+                    attributes: ["id", "username"],
+                },
+                {
+                    model: Comment,
+                    attributes: ["id", "comment", "created_at"],
+                    include: {
+                        model: User,
+                        attributes: ["id", "username"],
+                    },
+                },
+            ],
+        });
+        const post = dbPostData.get({ plain: true });
+        console.log(post);
+        res.render("post-details", {
+            post,
+            loggedIn: req.session.loggedIn,
+            user_id: req.session.user_id,
+        });
+    }
+    catch (err) {
+        console.log(err);
+        res.sendStatus(500);
+    }
+});
+
+
+
+
 
 module.exports = router;
