@@ -41,7 +41,6 @@ router.get("/", async (req, res) => {
 
 // login
 router.get("/login", (req, res) => {
-    console.log(req.session);
     if (req.session.loggedIn) {
         res.redirect("/dashboard");
     }
@@ -84,8 +83,8 @@ router.get("/post/:id/comments", async (req, res) => {
             ],
         });
         const post = dbPostData.get({ plain: true });
-        console.log(post);
-        res.render("post-details", {
+    
+        res.render("post-comments", {
             post,
             loggedIn: req.session.loggedIn,
             user_id: req.session.user_id,

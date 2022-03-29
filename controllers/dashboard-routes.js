@@ -65,4 +65,12 @@ router.get("/post/:id/", withAuth, async (req, res) => {
   }
 });
 
+// add new post
+router.get("/new-post", withAuth, (req, res) => {
+    res.render("newpost", {
+      loggedIn: req.session.loggedIn,
+      user_id: req.session.user_id,
+    });
+});
+
 module.exports = router;
