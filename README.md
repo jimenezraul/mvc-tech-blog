@@ -8,11 +8,19 @@ This is a tech blog created using [MVC](https://en.wikipedia.org/wiki/Model%E2%8
 - [MVC Tech Blog](#mvc-tech-blog)
   - [Description](#description)
   - [Table of Contents](#table-of-contents)
+  - [Screenshots](#screenshots)
   - [Installation](#installation)
   - [Seed Database](#seed-database)
   - [Run Server](#run-server)
   - [Deployment](#deployment)
   - [License](#license)
+
+## Screenshots
+Desktop View:
+![screenshot](/public/img/desktop.png) 
+ 
+Mobile View:
+![screenshot](/public/img/mobile.png)
 
 ## Installation
 ``` 
