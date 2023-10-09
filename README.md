@@ -60,7 +60,7 @@ npm start
 
 ## Deployment
 
-[Live Link](https://peaceful-hollows-93155.herokuapp.com)
+[Live Link](https://blog-x07x.onrender.com)
 
 ## License
 
